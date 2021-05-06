@@ -1,25 +1,52 @@
 
 import './App.css';
+import axios from 'axios';
+import { Route } from 'react-router-dom';
+import React, { Component } from 'react';
+import CountriesList from './components/CountriesList';
+import CountryDetails from './components/CountryDetails';
+import NavBar from './components/NavBar';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+
+
+ class App extends Component {
+
+  state = {
+     countrie: [],
+    }
+ 
+
+  componentDidMount() {
+    axios.get('https://restcountries.eu/rest/v2/all')
+      .then((response) => {
+        this.setState({
+          countries: response.data,
+        });
+      })
+      .catch(() => {
+      });
+  }
+
+
+  render() {
+    return (
+      <div className="container">
+        <NavBar />
+          <div className="row align-items-start">
+            <div className="col">
+             <CountriesList countries={this.state.allCountries} />
+            </div>
+            <div className="col">
+              <Route path="/country/:alpha3Code" component={CountryDetails} />
+            </div>
+          </div>
+      </div>
+    );
+  }
 }
+
+
+
 
 export default App;

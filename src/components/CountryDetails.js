@@ -1,60 +1,75 @@
-import React, { Component } from 'react'
-import axios from 'axios'
-import { Link } from 'react-router-dom'
+import React, { Component } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 class CountryDetails extends Component {
 
     state = {
-        CountryDetail: null
+        CountryDetails: null
     }
 
     getCountryDetails = () => {
         // make an api call to get pokemon details
-        let CountryCode = this.props.match.params.id
-        axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonid}/`)
+        let CountryCode = this.props.match.params.alpha3Code
+        axios.get(`https://restcountries.eu/rest/v2/alpha/${countryCode}`)
             .then((response) => {
-                const {height, weight, sprites} = response.data 
+                const {capital, area, borders, name} = response.data 
                 let detail = {
-                    height : height,
-                    weight: weight,
-                    image: sprites.other.dream_world.front_default,
-                    id:  Number(this.props.match.params.id)
+                    name : name,
+                    capital: capital,
+                    area: area,
+                    borders:  borders,
+                    
                 }
                 this.setState({
-                    pokemonDetail: detail
+                    CountryDetails: detail
                 })
+            })
+            .catch(() => {
             })
     }
 
     componentDidMount(){ 
         console.log('Did Mount')
-        this.getData()
+        this.getCountryDetails()
     }
 
     componentDidUpdate(){
         console.log('Did Update')
-        let stateId = this.state.pokemonDetail?.id
-        let propsId =  Number(this.props.match?.params?.id)
+        console.log(this.state.countryDetails)
+        let stateId = this.state.countryDetail.alpha3Code
+        let propsId =  this.props.match.params.alpha3Code
         if (stateId !== propsId) {
              //fetch the pokemon again
-            this.getData()
+            this.getCountryDetails()
         }
     }
 
     render() {
         console.log('Rendering')
-        const { pokemonDetail } = this.state
+        const { CountryDetails } = this.state
 
-        if (!pokemonDetail) {
+        if (!CountryDetails) {
             return <h1>Loading. . . </h1>
         }
 
         return (
             <div>
-                <h1>Detail page</h1>
-                <img src={pokemonDetail.image} />
-                <h4>Height: {pokemonDetail.height}</h4>
-                <h4>Weight: {pokemonDetail.weight}</h4>
+                <h1>{countryDetails.name}</h1>
+                <h4>Capital {countryDetails.capital}</h4>
+                <h4>Area {countryDetails.area}</h4>
+                    <div>
+                        Borders
+                    </div>
+                    <div>
+                    {countryDetail.borders.map((border) => {
+                            return (
+                    <div>
+                        <Link to={`/country/${border.alpha3Code}`}>{border}</Link>
+                    </div>
+                            );
+                        })}
+                    </div>
             </div>
         )
     }

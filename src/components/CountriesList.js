@@ -4,22 +4,29 @@ import axios from 'axios';
 
 
 
+
+
  class CountriesList extends Component {
      render () {
+         const { countries } = this.props;
+         if (!countries.length) {
+             return <h1>Loading. . . </h1>
+         }
+            return(
             <div style={{display: 'flex'}}>
                 <div>
-                    <h1>All Countries</h1>
+                    <h1>Countries</h1>
                     {
-                        AllCountries.map((country, i) => {
+                        countries.map((country, i) => {
                             return <div key={i}>
                                 <Link to={`/country/${country.aplha3Code}`}>{country.name}</Link>
                                 </div>
                         })
                     }
                 </div>
-                <Route path="/pokemon/:id" component={PokemonDetail} />
             </div>
-        )
+            )
+     }
     }
 
-export default CountriesList
+export default CountriesList;
